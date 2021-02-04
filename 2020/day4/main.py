@@ -1,4 +1,3 @@
-# -------------------------------------------------------- DAY 4 - PART 2 --------------------------------------------------------
 import re
 
 def validbyr(byr):
@@ -26,7 +25,7 @@ def validecl(ecl):
     return ecl in arr
 
 def validpid(pid):
-    return re.match("[0-9]{9}$",pid) and len(str(pid)) == 9
+    return re.match("[0-9]{9}$",pid)
 
 # ----------------------------------------------------------------------------------
 
@@ -48,20 +47,28 @@ while True:
             k = re.search('(.*)(?=:)', i).group()
             val = re.search('(?<=:)(.*)', i).group()
             l[k] = val
-        
+
 fields = ["byr","iyr","eyr","hgt","hcl","ecl","pid"]
-for i in passports:
-    if((len(i) == 8 or (len(i) == 7 and all(elem in i.keys()  for elem in fields)))
-    and all([validbyr(i["byr"]),
-            validiyr(i["iyr"]),
-            valideyr(i["eyr"]),
-            validhgt(i["hgt"]),
-            validhcl(i["hcl"]),
-            validecl(i["ecl"]),
-            validpid(i["pid"])])):
-        valids += 1
 
-print(valids)
+print("Part: ",end="")
+part = input()
 
-
-
+if(part == "1"):
+    for i in passports:
+        if(len(i) == 8 or (len(i) == 7 and all(elem in i.keys()  for elem in fields))):
+            valids += 1
+    print(valids)
+elif(part == "2"):
+    for i in passports:
+        if((len(i) == 8 or (len(i) == 7 and all(elem in i.keys()  for elem in fields)))
+        and all([validbyr(i["byr"]),
+                validiyr(i["iyr"]),
+                valideyr(i["eyr"]),
+                validhgt(i["hgt"]),
+                validhcl(i["hcl"]),
+                validecl(i["ecl"]),
+                validpid(i["pid"])])):
+            valids += 1
+    print(valids)
+else:
+    print("Parte inválida!")
