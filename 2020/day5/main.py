@@ -3,7 +3,6 @@ lines = file.readlines()
 
 arr = []
 for i in lines:
-    i = i.strip()
 
     rowmin = 0
     rowmax = 127
