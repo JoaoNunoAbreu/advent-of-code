@@ -1,4 +1,4 @@
-import re,json
+import re
 
 file = open('input.txt', 'r')
 lines = file.readlines()
@@ -8,6 +8,7 @@ part = input()
 
 d = {}
 
+# Preenchimento estrutura de dados
 for i in lines:
     k = re.search('(.*?)(?= bags)', i).group()
     vals = re.search('(?<=contain )(.*)(?=\.)', i).group().replace(", ",",").split(",")
