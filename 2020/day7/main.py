@@ -44,13 +44,12 @@ if(part == "1"):
 elif(part == "2"):
 
     def conta(bag_collection, bag_name):
-        count = 0
-        top_level_bag = bag_collection[bag_name]
-
-        if len(top_level_bag) == 0:
-            return count
+        
+        if len(bag_collection[bag_name]) == 0:
+            return 0
         else:
-            for current_bag in top_level_bag:
+            count = 0
+            for current_bag in bag_collection[bag_name]:
                 count += current_bag['quant']
                 res = conta(bag_collection, current_bag["tipo"])
                 count += res * current_bag['quant']
