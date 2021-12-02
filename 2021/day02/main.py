@@ -30,13 +30,12 @@ def part2(lines):
             aim -= units
         elif(operation == "forward"):
             horizontal += units
-            depth = aim * units
-
+            depth += aim * units
     return depth * horizontal
 
 
 def main():
-    file = open('input2.txt', 'r')
+    file = open('input.txt', 'r')
     lines = file.readlines()
     lines = [line.strip() for line in lines]
 
