@@ -1,125 +1,99 @@
-import re
-
 # Funções Auxiliares ----------------------------------------------------------
 
 
-def get_matrix(lines):
+def convert_to_matrix(lines):
     matrix = []
     for line in lines:
         matrix.append([int(i) for i in list(line)])
     return matrix
 
 
-def print_matrix(matrix):
-    for line in matrix:
-        print("".join(line))
-
-
-def check_adjacent(matrix, x, y):
-    width = len(matrix[0])
-    height = len(matrix)
-
-    # Canto superior esquerdo
-    if(x == 0 and y == 0 and matrix[y][x] < min(matrix[y+1][x], matrix[y][x+1])):
-        return True
-    # Canto superior direito
-    elif(x == width-1 and y == 0 and matrix[y][x] < min(matrix[y+1][x], matrix[y][x-1])):
-        return True
-    # Canto inferior esquerdo
-    elif(x == 0 and y == height-1 and matrix[y][x] < min(matrix[y-1][x], matrix[y][x+1])):
-        return True
-    # Canto inferior direito
-    elif(x == width-1 and y == height-1 and matrix[y][x] < min(matrix[y-1][x], matrix[y][x-1])):
-        return True
-    # Primeira linha
-    elif(y == 0 and x != 0 and x != width-1 and
-         matrix[y][x] < min(matrix[y+1][x], matrix[y][x-1], matrix[y][x+1])):
-        return True
-    # Última linha
-    elif(y == height-1 and x != 0 and x != width-1 and
-         matrix[y][x] < min(matrix[y-1][x], matrix[y][x-1], matrix[y][x+1])):
-        return True
-    # Primeira coluna
-    elif(x == 0 and y != 0 and y != height-1 and
-         matrix[y][x] < min(matrix[y-1][x], matrix[y+1][x], matrix[y][x+1])):
-        return True
-    # Última coluna
-    elif(x == width-1 and y != 0 and y != height-1 and
-         matrix[y][x] < min(matrix[y+1][x], matrix[y-1][x], matrix[y][x-1])):
-        return True
-    elif(y-1 >= 0 and y+1 <= height-1 and x - 1 >= 0 and x + 1 <= width-1 and
-         matrix[y][x] < min(matrix[y-1][x], matrix[y+1][x], matrix[y][x-1], matrix[y][x+1])):
-        return True
-
-
 def checker(matrix):
-    res = []
+    res = {}
     for y in range(len(matrix)):
         for x in range(len(matrix[y])):
-            if(check_adjacent(matrix, x, y)):
-                res.append((y, x))
+            l = [matrix[y][x] for (x, y) in get_around_values(matrix, x, y)]
+            if matrix[y][x] < min(l):
+                res[(x, y)] = matrix[y][x]
     return res
 
 
-def depth_find_adjacent(matrix, x, y, visited):
+def get_around_values(matrix, x, y):
     width = len(matrix[0])
     height = len(matrix)
-    res = []
-    for i in range(x-1, x+2):
-        for j in range(y-1, y+2):
-            if(i == x and j == y):
-                continue
-            if(i >= 0 and i < width and j >= 0 and j < height and
-               not visited[i][j] and matrix[i][j] > matrix[y][x]):
-                print("i,j:", i, j, "=", matrix[i][j])
-                print("x,y:", x, y, "=", matrix[y][x])
-                print("----")
-                res.append((i, j))
-                visited[i][j] = True
-    return res
+
+    if(x == 0 and y == 0):
+        return [(x, y+1), (x+1, y)]
+    elif(x == width-1 and y == 0):
+        return [(x, y+1), (x-1, y)]
+    elif(x == 0 and y == height-1):
+        return [(x, y-1), (x+1, y)]
+    elif(x == width-1 and y == height-1):
+        return [(x, y-1), (x-1, y)]
+    elif(y == 0 and x != 0 and x != width-1):
+        return [(x, y+1), (x-1, y), (x+1, y)]
+    elif(y == height-1 and x != 0 and x != width-1):
+        return [(x, y-1), (x-1, y), (x+1, y)]
+    elif(x == 0 and y != 0 and y != height-1):
+        return [(x, y-1), (x, y+1), (x+1, y)]
+    elif(x == width-1 and y != 0 and y != height-1):
+        return [(x, y-1), (x, y+1), (x-1, y)]
+    else:
+        return [(x, y-1), (x, y+1), (x-1, y), (x+1, y)]
+
+
+def get_all_around_values(matrix, x, y, visited):
+
+    if((x, y) in visited):
+        return []
+    else:
+        visited.append((x, y))
+
+    positions = get_around_values(matrix, x, y)
+    positions = filter_nines_and_visiteds(matrix, positions, visited)
+
+    for (x1, y1) in positions:
+        get_all_around_values(matrix, x1, y1, visited)
+
+
+def filter_nines_and_visiteds(matrix, arr, visited):
+    return [(x, y) for (x, y) in arr if matrix[y][x] != 9 or (x, y) in visited]
+
+
+def get_three_biggest_basins(visited):
+    visited.sort(key=len)
+    return len(visited[-1]) * len(visited[-2]) * len(visited[-3])
 
 # Part 1 ----------------------------------------------------------------------
 
 
 def part1(lines):
-    matrix = get_matrix(lines)
+    matrix = convert_to_matrix(lines)
     res = checker(matrix)
-    return sum([matrix[y][x] + 1 for (y, x) in res])
+    return sum(res.values()) + len(res)
 
 # Part 2 ----------------------------------------------------------------------
 
-# DOESNT WORK :(
-
 
 def part2(lines):
-    matrix = get_matrix(lines)
+    matrix = convert_to_matrix(lines)
     res = checker(matrix)
-    result = []
-    for (y, x) in res:
-        print("x,y: ", x, y)
-        result.append(depth_find_adjacent(matrix, x, y, [[False for i in range(len(matrix[0]))]
-                                                         for j in range(len(matrix))]))
-    for i in result:
-        print("len(i): ", len(i))
-        print(i)
-        print("")
-    return None
+    all_visited = []
+    for (x, y) in res:
+        visited = []
+        get_all_around_values(matrix, x, y, visited)
+        all_visited.append(visited)
+
+    return get_three_biggest_basins(all_visited)
 
 
 def main():
-    file = open('input2.txt', 'r')
+    file = open('input.txt', 'r')
     lines = file.readlines()
     lines = [line.strip() for line in lines]
 
-    print("Part: ", end="")
-    part = input()
-
-    if(part == "1"):
-        print(part1(lines))
-    elif(part == "2"):
-        print(part2(lines))
-    else:
-        print("Parte inválida!")
+    print("Part 1:", part1(lines))
+    print("Part 2:", part2(lines))
 
 
 if __name__ == "__main__":

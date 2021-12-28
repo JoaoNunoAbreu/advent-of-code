@@ -44,8 +44,8 @@ def part1(lines):
                 if(chunks[arr[-1]] == j):
                     arr.pop()
                 else:
-                    print(
-                        f'Expected {chunks[arr[-1]]}, but found {j} instead.')
+                    # print(
+                    #    f'Expected {chunks[arr[-1]]}, but found {j} instead.')
                     contador += pontos[j]
                     break
     return contador
@@ -67,8 +67,8 @@ def part2(lines):
                 if(chunks[arr[-1]] == j):
                     arr.pop()
                 else:
-                    print(
-                        f'Expected {chunks[arr[-1]]}, but found {j} instead.')
+                    # print(
+                    #     f'Expected {chunks[arr[-1]]}, but found {j} instead.')
                     corrupto = True
                     break
 
@@ -87,15 +87,8 @@ def main():
     lines = file.readlines()
     lines = [line.strip() for line in lines]
 
-    print("Part: ", end="")
-    part = input()
-
-    if(part == "1"):
-        print(part1(lines))
-    elif(part == "2"):
-        print(part2(lines))
-    else:
-        print("Parte inválida!")
+    print("Part 1:", part1(lines))
+    print("Part 2:", part2(lines))
 
 
 if __name__ == "__main__":
