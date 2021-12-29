@@ -81,6 +81,9 @@ def fill_graph(lines):
     return g
 
 
+def remove_repeated_lists_in_list_of_lists(l):
+    return [list(x) for x in set(tuple(x) for x in l)]
+
 # Part 1 ----------------------------------------------------------------------
 
 
@@ -100,11 +103,9 @@ def part2(lines):
         paths = g.get_all_paths_between_start_and_end_special(
             'start', 'end', i, 2)
         for j in paths:
-            if j not in all_paths:
-                all_paths.append(j)
-        print("calculando", i)
+            all_paths.append(j)
 
-    return len(all_paths)
+    return len(remove_repeated_lists_in_list_of_lists(all_paths))
 
 
 def main():
