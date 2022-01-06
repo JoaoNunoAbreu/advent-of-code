@@ -5,7 +5,7 @@ import copy
 ''' 
 For a better understanding of the code, I recommend reading the following:
 
-After de first step, the dictionary looks like this:
+After the first step, the dictionary looks like this:
 
 d = {
     'B': {
