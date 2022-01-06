@@ -1,5 +1,45 @@
 import copy
 
+# Notes -----------------------------------------------------------------------
+
+''' 
+For a better understanding of the code, I recommend reading the following:
+
+After de first step, the dictionary looks like this:
+
+d = {
+    'B': {
+        'B': 0,
+        'N': 0,
+        'H': 0,
+        'C': 1,
+        'count': 2
+    },
+    'N': {
+        'B': 1,
+        'N': 0,
+        'H': 0,
+        'C': 1,
+        'count': 2
+    },
+    'H': {
+        'B': 1,
+        'N': 0,
+        'H': 0,
+        'C': 0,
+        'count': 1
+    },
+    'C': {
+        'B': 0,
+        'N': 1,
+        'H': 1,
+        'C': 0,
+        'count': 2
+    }
+} 
+'''
+
+
 # Funções Auxiliares ----------------------------------------------------------
 
 
