@@ -1,7 +1,10 @@
 # Funções Auxiliares ----------------------------------------------------------
 
 def hex_to_bin(hex_num):
-    return bin(int(hex_num, 16))[2:].zfill(4)
+    res = ""
+    for i in hex_num:
+        res += bin(int(i, 16))[2:].zfill(4)
+    return res
 
 
 def bin_to_dec(bin_num):
@@ -12,6 +15,7 @@ def process_bin(bin_num):
     print("bin_num:", bin_num)
     version = bin_to_dec(bin_num[:3])
     type_id = bin_to_dec(bin_num[3:6])
+    print("version, type_id:", version, type_id)
 
     if(type_id == 4):
         rest = bin_num[6:]
@@ -24,6 +28,13 @@ def process_bin(bin_num):
         tail = rest[i+5:]
         print(version, type_id, parts, tail)
         return bin_to_dec("".join(parts))
+    else:
+        length_type_id = bin_num[6]
+        if(length_type_id == 0):
+            length = bin_to_dec(bin_num[7:7+15])
+            print("length:", length)
+        else:
+            print("length_type_id == 1")
 
 # Part 1 ----------------------------------------------------------------------
 
@@ -40,7 +51,7 @@ def part2(lines):
 
 
 def main():
-    filename = 'single_packet.txt'
+    filename = 'sub_packets.txt'
     file = open(filename, 'r')
     lines = file.readlines()
     lines = [line.strip() for line in lines]
