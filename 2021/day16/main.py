@@ -39,7 +39,7 @@ def process_0_operator(bin_num):
     #tail = bin_num[7+15+length:]
     while(sub_packets != ""):
         res += process_bin(sub_packets)
-    print("-------------------------------------")
+    print("--------------------------------------")
     return res
 
 
