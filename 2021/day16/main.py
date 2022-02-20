@@ -1,5 +1,8 @@
 # Funções Auxiliares ----------------------------------------------------------
 
+import sys
+
+
 def hex_to_bin(hex_num):
     res = ""
     for i in hex_num:
@@ -11,75 +14,59 @@ def bin_to_dec(bin_num):
     return int(bin_num, 2)
 
 
-def process_one_packet(bin_num):
-    print("-------------------------------------")
-    print("bin_num single:", bin_num)
+def initial_process(bin_num):
     version = bin_to_dec(bin_num[:3])
     type_id = bin_to_dec(bin_num[3:6])
     rest = bin_num[6:]
+    return version, type_id, rest
+
+
+def process_literal(bin_num):
     parts = []
     i = 0
-    while(rest[i] == "1"):
-        parts.append(rest[i+1:i+5])
+    while(bin_num[i] == "1"):
+        parts.append(bin_num[i:i+5])
         i += 5
-    parts.append(rest[i+1:i+5])
-    tail = rest[i+5:]
-    print(version, type_id, parts, tail)
-    print("-------------------------------------")
-    return version
+    parts.append(bin_num[i:i+5])
+    tail = bin_num[i+5:]
+    return parts, tail
 
 
-def process_0_operator(bin_num):
-    # com length dos packets todos
-    print("-------------------------------------")
-    res = 0
-    length = bin_to_dec(bin_num[7:7+15])
-    sub_packets = bin_num[7+15:7+15+length]
-    print("sub_packets:", sub_packets)
-    #tail = bin_num[7+15+length:]
-    while(sub_packets != ""):
-        res += process_bin(sub_packets)
-    print("--------------------------------------")
-    return res
-
-
-def process_1_operator(bin_num):
-    print("-------------------------------------")
-    # contem n sub packets
-    number_of_sub_packets = bin_to_dec(bin_num[7:7+11])
-    sub_tail = bin_num[7+11:]
-    res = 0
-    for _ in range(number_of_sub_packets):
-        res += process_bin(sub_tail)
-    print("-------------------------------------")
-    return res
-
-
-def process_bin(bin_num):
-    print("bin_num:", bin_num)
-    version = bin_to_dec(bin_num[:3])
-    type_id = bin_to_dec(bin_num[3:6])
-    print("version, type_id:", version, type_id)
-    res = 0
-
+def process_rest(type_id, rest):
     if(type_id == 4):
-        res += process_one_packet(bin_num)
+        parts, tail = process_literal(rest)
+        print(parts, tail)
+        return process(tail)
     else:
-        length_type_id = bin_num[6]
+        length_type_id = rest[0]
         if(length_type_id == "0"):
-            res += process_0_operator(bin_num)
+            length_sub_packets = bin_to_dec(rest[1:16])
+            sub_packets = rest[16:16+length_sub_packets]
+            tail = rest[16+length_sub_packets:]
+            return process(sub_packets) + process(tail)
         elif(length_type_id == "1"):
-            res += process_1_operator(bin_num)
+            number_of_sub_packets = bin_to_dec(rest[1:12])
+            return process(rest[12:])
         else:
-            print("Unknown type_id:", type_id)
-    return res
+            print("Error")
+            sys.exit(0)
+    return 0
+
+
+def process(bin_num):
+    if(bin_num == "" or bin_to_dec(bin_num) == 0):
+        return 0
+    else:
+        version, type_id, rest = initial_process(bin_num)
+        return version + process_rest(type_id, rest)
 
 # Part 1 ----------------------------------------------------------------------
 
 
 def part1(lines):
     line = lines[0]
-    print(process_bin(hex_to_bin(line)))
+    bin_num = hex_to_bin(line)
+    return process(bin_num)
 
 # Part 2 ----------------------------------------------------------------------
 
@@ -89,7 +76,7 @@ def part2(lines):
 
 
 def main():
-    filename = 'input2.txt'
+    filename = 'input.txt'
     file = open(filename, 'r')
     lines = file.readlines()
     lines = [line.strip() for line in lines]
