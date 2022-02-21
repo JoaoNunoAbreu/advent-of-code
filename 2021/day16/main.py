@@ -1,5 +1,6 @@
 # Funções Auxiliares ----------------------------------------------------------
 
+
 import sys
 
 
@@ -30,14 +31,14 @@ def process_literal(bin_num):
     parts.append(bin_num[i+1:i+5])
     tail = bin_num[i+5:]
 
-    return bin_to_dec("".join(parts)), tail
+    return bin_to_dec("".join(parts)), tail, i
 
 # Part 1 ----------------------------------------------------------------------
 
 
 def process_rest(type_id, rest):
     if(type_id == 4):
-        _, tail = process_literal(rest)
+        _, tail, _ = process_literal(rest)
         return process(tail)
     else:
         length_type_id = rest[0]
@@ -77,66 +78,74 @@ d = {
     7: lambda x, y: 1 if x == y else 0,
 }
 
-d2 = {
-    0: 0,
-    1: 1,
-    2: 9e99,
-    3: -9e99,
-    5: -9e99,
-    6: 9e99,
-    7: -9e98,
-}
 
-
-def process_rest2(type_id, rest, extra):
-    if(type_id == 4):
-        value, tail = process_literal(rest)
-        print("value:", value, "tail:", tail, "extra:", extra)
-        if(tail == "" or bin_to_dec(tail) == 0):
-            return value
-        else:
-            return d[extra](value, process2(tail, extra))
+def process2(bin_num, length=0):
+    packet_type = int(bin_num[3:6], 2)
+    length += 6
+    packet_value = ''
+    if packet_type == 4:
+        remaining = bin_num[6:]
+        while True:
+            if remaining[0] == '0':
+                packet_value += remaining[1:5]
+                remaining = remaining[5:]
+                length += 5
+                break
+            packet_value += remaining[1:5]
+            remaining = remaining[5:]
+            length += 5
+        packet_value = int(packet_value, 2)
     else:
-        length_type_id = rest[0]
-        if(length_type_id == "0"):
-            length_sub_packets = bin_to_dec(rest[1:16])
-            sub_packets = rest[16:16+length_sub_packets]
-            tail = rest[16+length_sub_packets:]
-            a = process2(sub_packets, type_id)
-            b = process2(tail, type_id)
-            print("a:", a, "b:", b)
-            if(type_id == 7 and b == -9e98 and a != 0):
-                return 1
-            else:
-                return d[type_id](a, b)
-        elif(length_type_id == "1"):
-            number_of_sub_packets = bin_to_dec(rest[1:12])
-            return process2(rest[12:], type_id)
-        else:
-            print("Error")
-            sys.exit(0)
+        type_id = bin_num[6]
+        remaining = bin_num[7:]
+        length += 1
+        if type_id == '0':
+            total_length = int(remaining[:15], 2)
+            remaining = remaining[15:]
+            length += 15
+            sub_packet_length = 0
+            values = []
+            while sub_packet_length != total_length:
+                remaining, sub_packet_length, value = process2(
+                    remaining, sub_packet_length)
+                values.append(value)
+            length += sub_packet_length
+        elif type_id == '1':
+            total_count = int(remaining[:11], 2)
+            remaining = remaining[11:]
+            length += 11
+            sub_packet_length = 0
+            count = 0
+            values = []
+            while count != total_count:
+                remaining, sub_packet_length, value = process2(
+                    remaining, sub_packet_length)
+                values.append(value)
+                count += 1
+            length += sub_packet_length
 
+        if packet_type == 0:
+            packet_value = sum(values)
+        elif packet_type == 1:
+            packet_value = 1
+            for item in values:
+                packet_value *= item
+        elif packet_type == 2:
+            packet_value = min(values)
+        elif packet_type == 3:
+            packet_value = max(values)
+        elif packet_type == 5:
+            packet_value = 1 if values[0] > values[1] else 0
+        elif packet_type == 6:
+            packet_value = 1 if values[0] < values[1] else 0
+        elif packet_type == 7:
+            packet_value = 1 if values[0] == values[1] else 0
 
-def process2(bin_num, extra=-1):
-    if(bin_num == "" or bin_to_dec(bin_num) == 0):
-        return d2[extra]
-    else:
-        version, type_id, rest = initial_process(bin_num)
-        return process_rest2(type_id, rest, extra)
+    return remaining, length, packet_value
 
 
 def part2(lines):
-    """ results = [3, 54, 7, 9, 1, 0, 0, 1]
-    for i in range(len(lines)):
-        a = process2(hex_to_bin(lines[i]))
-        b = results[i]
-        if a == b:
-            print("OK")
-        else:
-            print("ERROR", a, "!=", b)
-        print("----------------------")
-    return None """
-    return process2(hex_to_bin(lines[0]))
+    return process2(hex_to_bin(lines[0]))[2]
 
 
 def main():
@@ -145,7 +154,7 @@ def main():
     lines = file.readlines()
     lines = [line.strip() for line in lines]
 
-    # print("Part 1:", part1(lines))
+    print("Part 1:", part1(lines))
     print("Part 2:", part2(lines))
 
 
