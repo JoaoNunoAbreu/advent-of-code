@@ -16,20 +16,74 @@ class Node:
         n.right = other
         return n
 
-    def pprint(self, level=0):
-        if self.left:
-            self.left.pretty_print(level + 1)
-        print('\t' * level, self.value)
-        if self.right:
-            self.right.pretty_print(level + 1)
+    def in_order(self, level=0):
+        if self.left is not None:
+            self.left.in_order(level+1)
+        if(self.value != -1):
+            print(self.value, level)
+        if self.right is not None:
+            self.right.in_order(level+1)
+
+    def display(self):
+        lines, *_ = self._display_aux()
+        for line in lines:
+            print(line)
+
+    def _display_aux(self):
+        """Returns list of strings, width, height, and horizontal coordinate of the root."""
+        # No child.
+        if self.right is None and self.left is None:
+            line = '%s' % self.value
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if self.right is None:
+            lines, n, p, x = self.left._display_aux()
+            s = '%s' % self.value
+            u = len(s)
+            first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
+            second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
+            shifted_lines = [line + u * ' ' for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if self.left is None:
+            lines, n, p, x = self.right._display_aux()
+            s = '%s' % self.value
+            u = len(s)
+            first_line = s + x * '_' + (n - x) * ' '
+            second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
+            shifted_lines = [u * ' ' + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.left._display_aux()
+        right, m, q, y = self.right._display_aux()
+        s = '%s' % self.value
+        u = len(s)
+        first_line = (x + 1) * ' ' + (n - x - 1) * \
+            '_' + s + y * '_' + (m - y) * ' '
+        second_line = x * ' ' + '/' + \
+            (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
+        if p < q:
+            left += [n * ' '] * (q - p)
+        elif q < p:
+            right += [m * ' '] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + \
+            [a + u * ' ' + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
 
 
-# [[[6,6],3],0] to binary tree
-def array_to_tree(array):
-    if len(array) == 1:
-        return Node(array[0])
+# nested arrays to binary tree
+def array_to_tree(arr):
+    if isinstance(arr, int):
+        return Node(arr)
     else:
-        return array[0][0].concat_tree(array_to_tree(array[0][1]))
+        return array_to_tree(arr[0]).concat_tree(array_to_tree(arr[1]))
 
 
 def print_dict(d):
@@ -42,11 +96,13 @@ def print_dict(d):
 def part1(lines):
     line = literal_eval(lines[0])
     print("line:", line)
-    x = array_to_tree(line)
-    x.pprint()
-
+    tree = array_to_tree(line)
+    tree.display()
+    tree.in_order()
+    print(tree.get_pair_of_lowest_level())
 
 # Part 2 ----------------------------------------------------------------------
+
 
 def part2(lines):
     pass
