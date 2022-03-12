@@ -1,6 +1,3 @@
-import sys
-
-
 def part1(lines):
     count = 0
     for i in range(1, len(lines)):
@@ -22,15 +19,8 @@ def main():
     lines = file.readlines()
     lines = [int(i) for i in lines]
 
-    print("Part: ", end="")
-    part = input()
-
-    if(part == "1"):
-        print(part1(lines))
-    elif(part == "2"):
-        print(part2(lines))
-    else:
-        print("Parte inválida!")
+    print("Part 1:", part1(lines))
+    print("Part 2:", part2(lines))
 
 
 if __name__ == "__main__":

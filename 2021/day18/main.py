@@ -99,7 +99,7 @@ def part1(lines):
     tree = array_to_tree(line)
     tree.display()
     tree.in_order()
-    print(tree.get_pair_of_lowest_level())
+    return
 
 # Part 2 ----------------------------------------------------------------------
 
