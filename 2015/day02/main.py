@@ -12,7 +12,14 @@ def part1(lines):
 # Part 2 ----------------------------------------------------------------------
 
 def part2(lines):
-    pass
+    total = 0
+    for i in lines:
+        l, w, h = map(int, i.split("x"))
+        arr = [l, w, h]
+        arr.sort()
+        l, w, h = arr[0], arr[1], arr[2],
+        total += l*2 + w*2 + l*w*h
+    return total
 
 def main():
     filename = 'input.txt'
