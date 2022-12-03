@@ -33,7 +33,7 @@ def no_overlap_pairs(word):
             d[pair] += [(c, c+1)]
         else:
             d[pair] = [(c, c+1)]
-            
+
     for key in d:
         clean_arr = []
         coord = 0
@@ -47,7 +47,7 @@ def no_overlap_pairs(word):
             coord += 1
         if len(clean_arr) > 1:
             return True
-            
+
     return False
 
 # Part 1 ----------------------------------------------------------------------
