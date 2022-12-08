@@ -12,47 +12,29 @@ def check_around(matrix, i, j):
     
     return matrix[i][j] > max(left) or matrix[i][j] > max(right) or matrix[i][j] > max(up) or matrix[i][j] > max(down)
 
+def cut_until(arr, val):
+    res = 0
+    for k in arr:
+        if k < val:
+            res += 1
+        else:
+            res += 1
+            break
+    return res
+    
 def scenic_score(matrix, i, j):
     left = [matrix[i][k] for k in range(j)][::-1]
     right = [matrix[i][k] for k in range(j+1, len(matrix[0]))]
     up = [matrix[k][j] for k in range(i)][::-1]
     down = [matrix[k][j] for k in range(i+1, len(matrix))]
     
+    res_left = cut_until(left, matrix[i][j])
+    res_right = cut_until(right, matrix[i][j])
+    res_up = cut_until(up, matrix[i][j])
+    res_down = cut_until(down, matrix[i][j])
     
-    res_left = 0
-    for k in left:
-        if k < matrix[i][j]:
-            res_left += 1
-        else:
-            res_left += 1
-            break
-    
-    res_right = 0
-    for k in right:
-        if k < matrix[i][j]:
-            res_right += 1
-        else:
-            res_right += 1
-            break
-        
-    res_up = 0
-    for k in up:
-        if k < matrix[i][j]:
-            res_up += 1
-        else:
-            res_up += 1
-            break
-        
-    res_down = 0
-    for k in down:
-        if k < matrix[i][j]:
-            res_down += 1
-        else:
-            res_down += 1
-            break
-        
     return res_left * res_right * res_up * res_down
-
+    
 # Part 1 ----------------------------------------------------------------------
 
 def part1(lines):
