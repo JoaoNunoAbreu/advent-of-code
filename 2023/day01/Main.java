@@ -2,7 +2,6 @@ package day01;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.lang.Character.isDigit;
 import static utils.Utils.readFile;
@@ -58,8 +57,6 @@ public class Main {
     public static int part2(List<String> data) {
         return data.stream()
                 .map(Main::converter)
-                .map(line -> line.replaceAll("\\s*[a-z]\\s*", ""))
-                .filter(Objects::nonNull)
                 .map(line -> line.charAt(0) + String.valueOf(line.charAt(line.length() - 1)))
                 .mapToInt(Integer::parseInt)
                 .sum();
