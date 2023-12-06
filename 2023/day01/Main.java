@@ -27,6 +27,7 @@ public class Main {
     }
 
     // ---------------------------------------------------------------------------------------------------------
+    
     public static String iterator(String line){
         int begin = 0;
         while (begin < line.length()) {
@@ -61,6 +62,8 @@ public class Main {
                 .mapToInt(Integer::parseInt)
                 .sum();
     }
+
+    // ---------------------------------------------------------------------------------------------------------
 
     public static void main(String[] args) {
         List<String> data = readFile(DAY_FILE);
