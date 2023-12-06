@@ -8,7 +8,7 @@ import static utils.Utils.readFile;
 import static utils.Utils.reverseString;
 
 public class Main {
-    private static final String DAY_FILE = "/Users/abreuj/dev/general/advent-of-code/2023/day01/input.txt";
+    private static final String DAY_FILE = System.getProperty("user.dir") + "/2023/day01/input.txt";
     private static final Map<String, Integer> numbers = Map.of(
             "one", 1, "two", 2, "three", 3, "four", 4, "five", 5, "six", 6, "seven", 7, "eight", 8, "nine", 9
     );

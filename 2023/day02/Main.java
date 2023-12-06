@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import static utils.Utils.readFile;
 
 public class Main {
-    private static final String DAY_FILE = "/Users/abreuj/dev/general/advent-of-code/2023/day02/input.txt";
+    private static final String DAY_FILE = System.getProperty("user.dir") + "/2023/day02/input.txt";
     private static final Map<String, Integer> LIMITS = Map.of(
             "red", 12, "green", 13, "blue", 14
     );
