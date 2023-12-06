@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.lang.Character.isDigit;
-import static utils.FileReader.readFile;
-import static utils.FileReader.reverseString;
+import static utils.Utils.readFile;
+import static utils.Utils.reverseString;
 
 public class Main {
     private static final String DAY_FILE = "/Users/abreuj/dev/general/advent-of-code/2023/day01/input.txt";
