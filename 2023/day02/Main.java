@@ -23,6 +23,7 @@ public class Main {
     }
 
     // ---------------------------------------------------------------------------------------------------------
+
     public static int part1(List<String> data) {
         List<String[]> processed = process(data);
 
@@ -50,6 +51,7 @@ public class Main {
     }
 
     // ---------------------------------------------------------------------------------------------------------
+
     public static int part2(List<String> data) {
         List<String[]> processed = process(data);
 

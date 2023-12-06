@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class Utils {
 
     private Utils() {}
+
     public static List<String> readFile(String filename) {
         try {
             return Files.lines(Paths.get(filename)).collect(Collectors.toList());
