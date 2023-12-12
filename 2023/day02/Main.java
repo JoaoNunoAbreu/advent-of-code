@@ -27,27 +27,24 @@ public class Main {
     public static int part1(List<String> data) {
         List<String[]> processed = process(data);
 
-        int i = 1;
-        int res = 0;
+        int result = 0;
+        int index = 1;
         for (String[] lines : processed) {
-            boolean invalid = false;
-            for (String line : lines) {
-                String[] pairs = line.split(", ");
-                for (String pair : pairs) {
-                    String[] singlePair = pair.split(" ");
-                    int number = Integer.parseInt(singlePair[0]);
-                    String color = singlePair[1];
-                    if (number > LIMITS.get(color)) {
-                        invalid = true;
-                    }
-                }
+            boolean isInvalid = Arrays.stream(lines)
+                    .map(line -> line.split(", "))
+                    .flatMap(Arrays::stream)
+                    .map(pair -> pair.split(" "))
+                    .anyMatch(singlePair -> {
+                        int number = Integer.parseInt(singlePair[0]);
+                        String color = singlePair[1];
+                        return number > LIMITS.get(color);
+                    });
+            if (!isInvalid) {
+                result += index;
             }
-            if (!invalid) {
-                res += i;
-            }
-            i++;
+            index++;
         }
-        return res;
+        return result;
     }
 
     // ---------------------------------------------------------------------------------------------------------
@@ -55,24 +52,21 @@ public class Main {
     public static int part2(List<String> data) {
         List<String[]> processed = process(data);
 
-        int res = 0;
+        int result = 0;
         for (String[] lines : processed) {
-            Map<String, Integer> colors = new HashMap<>();
+            Map<String, Integer> colorCounts = new HashMap<>();
             for (String line : lines) {
                 String[] pairs = line.split(", ");
                 for (String pair : pairs) {
                     String[] singlePair = pair.split(" ");
                     int number = Integer.parseInt(singlePair[0]);
                     String color = singlePair[1];
-                    colors.compute(color, (key, existingNumber) -> existingNumber == null
-                            ? number
-                            : Math.max(existingNumber, number)
-                    );
+                    colorCounts.merge(color, number, Math::max);
                 }
             }
-            res += colors.values().stream().reduce(1, (a, b) -> a * b);
+            result += colorCounts.values().stream().reduce(1, Math::multiplyExact);
         }
-        return res;
+        return result;
     }
 
     // ---------------------------------------------------------------------------------------------------------
