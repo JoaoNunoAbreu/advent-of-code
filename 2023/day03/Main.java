@@ -53,61 +53,72 @@ public class Main {
     }
 
     public static boolean isNearSymbol(Character[][] matrix, int row, int column) {
-        // Check left
+        // left
         if (column > 0 && !Character.isDigit(matrix[row][column - 1]) && matrix[row][column - 1] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("left");
-            }
             return true;
         }
-        // Check right
+        // right
         if (column < NUM_COLS - 1 && !Character.isDigit(matrix[row][column + 1]) && matrix[row][column + 1] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("right");
-                System.out.println(matrix[row][column + 1]);
-            }
             return true;
         }
-        // Check up
+        // up
         if (row > 0 && !Character.isDigit(matrix[row - 1][column]) && matrix[row - 1][column] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("up");
-            }
             return true;
         }
-        // Check down
+        // down
         if (row < NUM_ROWS - 1 && !Character.isDigit(matrix[row + 1][column]) && matrix[row + 1][column] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("down");
-            }
             return true;
         }
-        // Check upper left diagonal
+        // upper left diagonal
         if (row > 0 && column > 0 && !Character.isDigit(matrix[row - 1][column - 1]) && matrix[row - 1][column - 1] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("upper left");
-            }
             return true;
         }
-        // Check upper right diagonal
+        // upper right diagonal
         if (row > 0 && column < NUM_COLS - 1 && !Character.isDigit(matrix[row - 1][column + 1]) && matrix[row - 1][column + 1] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("upper right");
-            }
             return true;
         }
-        // Check lower left diagonal
+        // lower left diagonal
         if (row < NUM_ROWS - 1 && column > 0 && !Character.isDigit(matrix[row + 1][column - 1]) && matrix[row + 1][column - 1] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("lower left");
-            }
             return true;
         }
-        // Check lower right diagonal
+        // lower right diagonal
         if (row < NUM_ROWS - 1 && column < NUM_COLS - 1 && !Character.isDigit(matrix[row + 1][column + 1]) && matrix[row + 1][column + 1] != '.') {
-            if (row == 92 && column == 115) {
-                System.out.println("lower right");
-            }
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isNearAsterisk(Character[][] matrix, int row, int column) {
+        // left
+        if (column > 0 && matrix[row][column - 1] == '*') {
+            return true;
+        }
+        // right
+        if (column < NUM_COLS - 1 && matrix[row][column + 1] == '*') {
+            return true;
+        }
+        // up
+        if (row > 0 && matrix[row - 1][column] == '*') {
+            return true;
+        }
+        // down
+        if (row < NUM_ROWS - 1 && matrix[row + 1][column] == '*') {
+            return true;
+        }
+        // upper left diagonal
+        if (row > 0 && column > 0 && matrix[row - 1][column - 1] == '*') {
+            return true;
+        }
+        // upper right diagonal
+        if (row > 0 && column < NUM_COLS - 1 && matrix[row - 1][column + 1] == '*') {
+            return true;
+        }
+        // lower left diagonal
+        if (row < NUM_ROWS - 1 && column > 0 && matrix[row + 1][column - 1] == '*') {
+            return true;
+        }
+        // lower right diagonal
+        if (row < NUM_ROWS - 1 && column < NUM_COLS - 1 && matrix[row + 1][column + 1] == '*') {
             return true;
         }
         return false;
@@ -170,7 +181,28 @@ public class Main {
     // ---------------------------------------------------------------------------------------------------------
 
     public static int part2(List<String> data) {
-        return data.size();
+        Character[][] matrix = process(data);
+        printMatrix(matrix);
+        System.out.println(numbersAndPositions(matrix));
+
+        Map<Integer, List<List<Pair<Integer, Integer>>>> numbersAndPositions = numbersAndPositions(matrix);
+        List<List<Pair<Integer, Integer>>> nearAsteriks = new ArrayList<>();
+        for (Map.Entry<Integer, List<List<Pair<Integer, Integer>>>> entry : numbersAndPositions.entrySet()) {
+            for (List<Pair<Integer, Integer>> list : entry.getValue()) {
+                boolean isNear = false;
+                for (Pair<Integer, Integer> pair : list) {
+                    if (isNearAsterisk(matrix, pair.getFirst(), pair.getSecond())) {
+                        isNear = true;
+                        break;
+                    }
+                }
+                if (isNear) {
+                    nearAsteriks.add(list);
+                }
+            }
+        }
+        System.out.println("nearAsteriks = " + nearAsteriks);
+        return nearAsteriks.size();
     }
 
     // ---------------------------------------------------------------------------------------------------------
