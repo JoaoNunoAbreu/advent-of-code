@@ -2,15 +2,13 @@ package day03;
 
 import utils.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static utils.Utils.readFile;
 
 public class Main {
-    private static final String DAY_FILE = System.getProperty("user.dir") + "/2023/day03/input3.txt";
+    private static final String DAY_FILE = System.getProperty("user.dir") + "/2023/day03/input.txt";
     private static int NUM_ROWS = 0;
     private static int NUM_COLS = 0;
 
@@ -58,55 +56,87 @@ public class Main {
     public static boolean isNearSymbol(Character[][] matrix, int row, int column) {
         // Check left
         if (column > 0 && !Character.isDigit(matrix[row][column - 1]) && matrix[row][column - 1] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("left");
+            }
             return true;
         }
         // Check right
         if (column < NUM_COLS - 1 && !Character.isDigit(matrix[row][column + 1]) && matrix[row][column + 1] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("right");
+                System.out.println(matrix[row][column + 1]);
+            }
             return true;
         }
         // Check up
         if (row > 0 && !Character.isDigit(matrix[row - 1][column]) && matrix[row - 1][column] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("up");
+            }
             return true;
         }
         // Check down
         if (row < NUM_ROWS - 1 && !Character.isDigit(matrix[row + 1][column]) && matrix[row + 1][column] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("down");
+            }
             return true;
         }
         // Check upper left diagonal
         if (row > 0 && column > 0 && !Character.isDigit(matrix[row - 1][column - 1]) && matrix[row - 1][column - 1] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("upper left");
+            }
             return true;
         }
         // Check upper right diagonal
-        if (row > 0 && column < NUM_ROWS - 1 && !Character.isDigit(matrix[row - 1][column + 1]) && matrix[row - 1][column + 1] != '.') {
+        if (row > 0 && column < NUM_COLS - 1 && !Character.isDigit(matrix[row - 1][column + 1]) && matrix[row - 1][column + 1] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("upper right");
+            }
             return true;
         }
         // Check lower left diagonal
-        if (row < NUM_COLS - 1 && column > 0 && !Character.isDigit(matrix[row + 1][column - 1]) && matrix[row + 1][column - 1] != '.') {
+        if (row < NUM_ROWS - 1 && column > 0 && !Character.isDigit(matrix[row + 1][column - 1]) && matrix[row + 1][column - 1] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("lower left");
+            }
             return true;
         }
         // Check lower right diagonal
-        if (row < NUM_COLS - 1 && column < NUM_ROWS - 1 && !Character.isDigit(matrix[row + 1][column + 1]) && matrix[row + 1][column + 1] != '.') {
+        if (row < NUM_ROWS - 1 && column < NUM_COLS - 1 && !Character.isDigit(matrix[row + 1][column + 1]) && matrix[row + 1][column + 1] != '.') {
+            if (row == 92 && column == 115) {
+                System.out.println("lower right");
+            }
             return true;
         }
         return false;
     }
 
-    public static Map<Integer, List<Pair<Integer, Integer>>> numbersAndPositions(Character[][] matrix) {
-        Map<Integer, List<Pair<Integer, Integer>>> res = new HashMap<>();
+    public static Map<Integer, List<List<Pair<Integer, Integer>>>> numbersAndPositions(Character[][] matrix) {
+        Map<Integer, List<List<Pair<Integer, Integer>>>> res = new HashMap<>();
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 StringBuilder number = new StringBuilder();
                 List<Pair<Integer, Integer>> coordinates = new ArrayList<>();
                 if (Character.isDigit(matrix[row][col])) {
                     int i = col;
-                    while (i < NUM_COLS && matrix[row][i] != '.') {
+                    while (i < NUM_COLS && Character.isDigit(matrix[row][i])) {
                         if(Character.isDigit(matrix[row][i])) {
                             number.append(matrix[row][i]);
                             coordinates.add(new Pair<>(row, i));
                         }
                         i++;
                     }
-                    res.put(Integer.parseInt(number.toString()), coordinates);
+                    if (Integer.parseInt(number.toString()) == 984111) {
+                        System.out.println("coordinates = " + coordinates);
+                    }
+                    if (res.containsKey(Integer.parseInt(number.toString()))) {
+                        res.get(Integer.parseInt(number.toString())).add(coordinates);
+                    } else {
+                        res.put(Integer.parseInt(number.toString()), new ArrayList<>(Collections.singletonList(coordinates)));
+                    }
                     col = i;
                 }
             }
@@ -119,8 +149,23 @@ public class Main {
         printMatrix(matrix);
         System.out.println(numbersAndPositions(matrix));
 
-        Map<Integer, List<Pair<Integer, Integer>>> numbersAndPositions
-        return 0;
+        Map<Integer, List<List<Pair<Integer, Integer>>>> numbersAndPositions = numbersAndPositions(matrix);
+        List<Integer> nearSymbols = new ArrayList<>();
+        for(Map.Entry<Integer, List<List<Pair<Integer, Integer>>>> entry : numbersAndPositions.entrySet()) {
+            for (List<Pair<Integer, Integer>> list : entry.getValue()) {
+                boolean isNear = false;
+                for (Pair<Integer, Integer> pair : list) {
+                    if (isNearSymbol(matrix, pair.getFirst(), pair.getSecond())) {
+                        isNear = true;
+                    }
+                }
+                if (isNear) {
+                    nearSymbols.add(entry.getKey());
+                }
+            }
+        }
+        System.out.println(nearSymbols);
+        return nearSymbols.stream().mapToInt(Integer::intValue).sum();
     }
 
     // ---------------------------------------------------------------------------------------------------------
