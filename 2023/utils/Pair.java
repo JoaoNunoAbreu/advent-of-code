@@ -29,4 +29,18 @@ public class Pair<T, U> {
     public String toString() {
         return "(" + first + ", " + second + ")";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Pair) {
+            Pair<?, ?> other = (Pair<?, ?>) obj;
+            return first.equals(other.first) && second.equals(other.second);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return first.hashCode() ^ second.hashCode();
+    }
 }

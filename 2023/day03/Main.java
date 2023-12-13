@@ -82,46 +82,43 @@ public class Main {
             return true;
         }
         // lower right diagonal
-        if (row < NUM_ROWS - 1 && column < NUM_COLS - 1 && !Character.isDigit(matrix[row + 1][column + 1]) && matrix[row + 1][column + 1] != '.') {
-            return true;
-        }
-        return false;
+        return row < NUM_ROWS - 1 && column < NUM_COLS - 1 && !Character.isDigit(matrix[row + 1][column + 1]) && matrix[row + 1][column + 1] != '.';
     }
 
-    public static boolean isNearAsterisk(Character[][] matrix, int row, int column) {
+    public static Pair<Integer, Integer> isNearAsterisk(Character[][] matrix, int row, int column) {
         // left
         if (column > 0 && matrix[row][column - 1] == '*') {
-            return true;
+            return new Pair<>(row, column - 1);
         }
         // right
         if (column < NUM_COLS - 1 && matrix[row][column + 1] == '*') {
-            return true;
+            return new Pair<>(row, column + 1);
         }
         // up
         if (row > 0 && matrix[row - 1][column] == '*') {
-            return true;
+            return new Pair<>(row - 1, column);
         }
         // down
         if (row < NUM_ROWS - 1 && matrix[row + 1][column] == '*') {
-            return true;
+            return new Pair<>(row + 1, column);
         }
         // upper left diagonal
         if (row > 0 && column > 0 && matrix[row - 1][column - 1] == '*') {
-            return true;
+            return new Pair<>(row - 1, column - 1);
         }
         // upper right diagonal
         if (row > 0 && column < NUM_COLS - 1 && matrix[row - 1][column + 1] == '*') {
-            return true;
+            return new Pair<>(row - 1, column + 1);
         }
         // lower left diagonal
         if (row < NUM_ROWS - 1 && column > 0 && matrix[row + 1][column - 1] == '*') {
-            return true;
+            return new Pair<>(row + 1, column - 1);
         }
         // lower right diagonal
         if (row < NUM_ROWS - 1 && column < NUM_COLS - 1 && matrix[row + 1][column + 1] == '*') {
-            return true;
+            return new Pair<>(row + 1, column + 1);
         }
-        return false;
+        return null;
     }
 
     public static Map<Integer, List<List<Pair<Integer, Integer>>>> numbersAndPositions(Character[][] matrix) {
@@ -138,9 +135,6 @@ public class Main {
                             coordinates.add(new Pair<>(row, i));
                         }
                         i++;
-                    }
-                    if (Integer.parseInt(number.toString()) == 984111) {
-                        System.out.println("coordinates = " + coordinates);
                     }
                     if (res.containsKey(Integer.parseInt(number.toString()))) {
                         res.get(Integer.parseInt(number.toString())).add(coordinates);
@@ -186,23 +180,48 @@ public class Main {
         System.out.println(numbersAndPositions(matrix));
 
         Map<Integer, List<List<Pair<Integer, Integer>>>> numbersAndPositions = numbersAndPositions(matrix);
-        List<List<Pair<Integer, Integer>>> nearAsteriks = new ArrayList<>();
+        Map<Pair<Integer, Integer>, List<List<Pair<Integer, Integer>>>> asterisksAndNearNumbers = new HashMap<>();
+
         for (Map.Entry<Integer, List<List<Pair<Integer, Integer>>>> entry : numbersAndPositions.entrySet()) {
             for (List<Pair<Integer, Integer>> list : entry.getValue()) {
                 boolean isNear = false;
+                Pair<Integer, Integer> asterisk = null;
                 for (Pair<Integer, Integer> pair : list) {
-                    if (isNearAsterisk(matrix, pair.getFirst(), pair.getSecond())) {
+                    Pair<Integer, Integer> asteriskLocal = isNearAsterisk(matrix, pair.getFirst(), pair.getSecond());
+                    if (asteriskLocal != null) {
                         isNear = true;
+                        asterisk = asteriskLocal;
                         break;
                     }
                 }
                 if (isNear) {
-                    nearAsteriks.add(list);
+                    if (asterisksAndNearNumbers.containsKey(asterisk)) {
+                        asterisksAndNearNumbers.get(asterisk).add(list);
+                    } else {
+                        asterisksAndNearNumbers.put(asterisk, new ArrayList<>(Collections.singletonList(list)));
+                    }
                 }
             }
         }
-        System.out.println("nearAsteriks = " + nearAsteriks);
-        return nearAsteriks.size();
+        return getSum(asterisksAndNearNumbers, matrix);
+    }
+
+    private static int getSum(Map<Pair<Integer, Integer>, List<List<Pair<Integer, Integer>>>> asterisksAndNearNumbers, Character[][] matrix) {
+        int sum = 0;
+        for (Map.Entry<Pair<Integer, Integer>, List<List<Pair<Integer, Integer>>>> entry : asterisksAndNearNumbers.entrySet()) {
+            List<Integer> numbers = new ArrayList<>();
+            for (List<Pair<Integer, Integer>> list : entry.getValue()) {
+                StringBuilder str = new StringBuilder();
+                for (Pair<Integer, Integer> pair : list) {
+                    str.append(matrix[pair.getFirst()][pair.getSecond()]);
+                }
+                numbers.add(Integer.parseInt(str.toString()));
+            }
+            if (numbers.size() == 2) {
+                sum += numbers.get(0) * numbers.get(1);
+            }
+        }
+        return sum;
     }
 
     // ---------------------------------------------------------------------------------------------------------
