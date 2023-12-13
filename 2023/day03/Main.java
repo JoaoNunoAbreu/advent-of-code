@@ -3,7 +3,6 @@ package day03;
 import utils.Pair;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static utils.Utils.readFile;
 
@@ -123,7 +122,7 @@ public class Main {
                 if (Character.isDigit(matrix[row][col])) {
                     int i = col;
                     while (i < NUM_COLS && Character.isDigit(matrix[row][i])) {
-                        if(Character.isDigit(matrix[row][i])) {
+                        if (Character.isDigit(matrix[row][i])) {
                             number.append(matrix[row][i]);
                             coordinates.add(new Pair<>(row, i));
                         }
@@ -151,7 +150,7 @@ public class Main {
 
         Map<Integer, List<List<Pair<Integer, Integer>>>> numbersAndPositions = numbersAndPositions(matrix);
         List<Integer> nearSymbols = new ArrayList<>();
-        for(Map.Entry<Integer, List<List<Pair<Integer, Integer>>>> entry : numbersAndPositions.entrySet()) {
+        for (Map.Entry<Integer, List<List<Pair<Integer, Integer>>>> entry : numbersAndPositions.entrySet()) {
             for (List<Pair<Integer, Integer>> list : entry.getValue()) {
                 boolean isNear = false;
                 for (Pair<Integer, Integer> pair : list) {
@@ -171,7 +170,7 @@ public class Main {
     // ---------------------------------------------------------------------------------------------------------
 
     public static int part2(List<String> data) {
-        return 0;
+        return data.size();
     }
 
     // ---------------------------------------------------------------------------------------------------------
