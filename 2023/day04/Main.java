@@ -1,16 +1,16 @@
 package day04;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static utils.Utils.readFile;
 
 public class Main {
-    private static final String DAY_FILE = System.getProperty("user.dir") + "/2023/day04/input2.txt";
+    private static final String DAY_FILE = System.getProperty("user.dir") + "/2023/day04/input.txt";
 
     private static int calculateMultiplier(int cardNumber) {
         return (int) Math.pow(2, (double) cardNumber - 1);
@@ -56,35 +56,22 @@ public class Main {
 
     // ---------------------------------------------------------------------------------------------------------
 
-    public static BigInteger part2(List<String> data) {
+    public static int part2(List<String> data) {
         List<List<List<Integer>>> list = process(data);
         List<Integer> result = calculateMatching(list);
 
-        Map<Integer, BigInteger> mapper = new HashMap<>();
-        for (int i = 0; i < result.size(); i++) {
-            mapper.put(i+1, BigInteger.valueOf(1));
-        }
-
-        System.out.println(result);
+        Map<Integer, Integer> mapper = new HashMap<>();
+        IntStream.range(0, result.size()).forEach(i -> mapper.put(i, 1));
 
         for (int i = 0; i < result.size(); i++) {
-            int game = i + 1;
-            int matchers = result.get(i);
-            for (int j = 0; j < matchers; j++) {
-                int nextGame = game + j + 1;
-                int multiplier = calculateMultiplier(game);
-                mapper.put(nextGame, mapper.get(nextGame).add(BigInteger.valueOf(multiplier)));
+            int value = result.get(i);
+            for(int j = i + 1; j < value + i + 1; j++) {
+                mapper.put(j, mapper.get(j) + mapper.get(i));
             }
         }
-        System.out.println(mapper);
-        BigInteger sum = new BigInteger("0");
-        for (int i = 0; i < result.size(); i++) {
-            sum = sum.add(mapper.get(i+1));
-        }
-        return sum;
-    }
 
-    // [X] 1500089387371
+        return mapper.values().stream().mapToInt(Integer::intValue).sum();
+    }
 
     // ---------------------------------------------------------------------------------------------------------
 
