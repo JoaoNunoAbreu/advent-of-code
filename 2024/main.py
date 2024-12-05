@@ -23,7 +23,6 @@ def part_2(data):
     arr1.sort()
     arr2.sort()
 
-    map1 = {x:arr1.count(x) for x in arr1}
     map2 = {x:arr2.count(x) for x in arr2}
 
     return sum([x * map2.get(x, 0) for x in arr1])
