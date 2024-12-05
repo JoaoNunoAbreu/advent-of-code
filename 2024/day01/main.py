@@ -8,20 +8,14 @@ def process_data(data):
     return [[int(x) for x in line.split('   ')] for line in data]
 
 def part_1(data):
-    arr1 = [x[0] for x in data]
-    arr2 = [x[1] for x in data]
-
-    arr1.sort()
-    arr2.sort()
+    arr1 = sorted([x[0] for x in data])
+    arr2 = sorted([x[1] for x in data])
 
     return sum([abs(x-y) for x,y in zip(arr1, arr2)])
 
 def part_2(data):
-    arr1 = [x[0] for x in data]
-    arr2 = [x[1] for x in data]
-
-    arr1.sort()
-    arr2.sort()
+    arr1 = sorted([x[0] for x in data])
+    arr2 = sorted([x[1] for x in data])
 
     map2 = {x:arr2.count(x) for x in arr2}
 
