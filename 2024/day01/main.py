@@ -2,7 +2,7 @@ INPUT_FILE = 'input.txt'
 
 def read_file():
     with open(INPUT_FILE, 'r') as file:
-        return [x.strip() for x in file.readlines()]
+        return file.read()
 
 def process_data(data):
     return [[int(x) for x in line.split('   ')] for line in data]
@@ -24,7 +24,8 @@ def part_2(data):
 
 def main():
     data = read_file()
-    processed_data = process_data(data)
+    lines = data.splitlines()
+    processed_data = process_data(lines)
     part1 = part_1(processed_data)
     part2 = part_2(processed_data)
 
