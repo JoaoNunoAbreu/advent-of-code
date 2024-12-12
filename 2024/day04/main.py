@@ -6,16 +6,8 @@ def build_matrix(data):
 
 
 def print_matrix(matrix):
-    print("    ", end="")
-    for i in range(len(matrix[0])):
-        print(i, end=" ")
-    print()
-    print("-" * (len(matrix[0]) * 2 + 3))
     for i, line in enumerate(matrix):
         print(i, "|", ' '.join(line))
-
-
-NEXT = {"X": "M", "M": "A", "A": "S"}
 
 
 def extract_coordinates(data, char):
@@ -64,7 +56,6 @@ def mas_finder(data, x, y):
             and data[x - 1][y + 1] == "M"
             and data[x + 1][y - 1] == "S"):
         count += 1
-        print("1", x, y)
 
     if (0 < x < len(data) - 1 and 0 < y < len(data[0]) - 1
             and data[x - 1][y - 1] == "S"
@@ -72,7 +63,6 @@ def mas_finder(data, x, y):
             and data[x - 1][y + 1] == "S"
             and data[x + 1][y - 1] == "M"):
         count += 1
-        print("2", x, y)
 
     if (0 < x < len(data) - 1 and 0 < y < len(data[0]) - 1
             and data[x - 1][y - 1] == "S"
@@ -80,7 +70,6 @@ def mas_finder(data, x, y):
             and data[x - 1][y + 1] == "M"
             and data[x + 1][y - 1] == "S"):
         count += 1
-        print("3", x, y)
 
     if (0 < x < len(data) - 1 and 0 < y < len(data[0]) - 1
             and data[x - 1][y - 1] == "M"
@@ -88,7 +77,6 @@ def mas_finder(data, x, y):
             and data[x - 1][y + 1] == "S"
             and data[x + 1][y - 1] == "M"):
         count += 1
-        print("4", x, y)
 
     return count
 
@@ -104,7 +92,6 @@ def part_1(data):
 def part_2(data):
     count = 0
     coordinates = extract_coordinates(data, "A")
-    print(len(coordinates))
     for x, y in coordinates:
         count += mas_finder(data, x, y)
     return count
@@ -113,7 +100,6 @@ def part_2(data):
 def main():
     data = read_file_lines()
     data = build_matrix(data)
-    print_matrix(data)
 
     part1 = part_1(data)
     part2 = part_2(data)
