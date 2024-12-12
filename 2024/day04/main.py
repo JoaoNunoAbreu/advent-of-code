@@ -1,13 +1,4 @@
-from utils.files import read_file_lines
-
-
-def build_matrix(data):
-    return [[char for char in line] for line in data]
-
-
-def print_matrix(matrix):
-    for i, line in enumerate(matrix):
-        print(i, "|", ' '.join(line))
+from utils.files import *
 
 
 def extract_coordinates(data, char):
