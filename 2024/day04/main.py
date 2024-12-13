@@ -1,4 +1,4 @@
-from utils.files import *
+import utils.files
 
 
 def extract_coordinates(data, char):
@@ -89,8 +89,8 @@ def part_2(data):
 
 
 def main():
-    data = read_file_lines()
-    data = build_matrix(data)
+    data = utils.files.read_file_lines()
+    data = utils.files.build_matrix(data)
 
     part1 = part_1(data)
     part2 = part_2(data)

@@ -10,7 +10,7 @@ def read_file_lines():
         return [line.strip() for line in data]
 
 def build_matrix(data):
-    return [[char for char in line] for line in data]
+    return [list(line) for line in data]
 
 def print_matrix(matrix):
     for line in matrix:
