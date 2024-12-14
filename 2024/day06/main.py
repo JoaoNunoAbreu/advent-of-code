@@ -1,14 +1,14 @@
 from utils.files import *
 
 
-directions = {
+DIRECTIONS = {
     '^': (-1, 0),
     'v': (1, 0),
     '<': (0, -1),
     '>': (0, 1)
 }
 
-new_direction = {
+NEXT_DIRECTION = {
     '^': '>',
     '>': 'v',
     'v': '<',
@@ -26,47 +26,54 @@ def find_start(matrix):
 def build_path(matrix, visited):
     print("-" * 20)
     matrix = [list(row) for row in matrix]
-    for i, j, _ in visited:
+    for i, j in visited:
         matrix[i][j] = "X"
 
     return matrix
 
 
-def is_edge(matrix, i, j):
-    return i == 0 or i == len(matrix) - 1 or j == 0 or j == len(matrix[0]) - 1
+def is_looking_at_edge(matrix, i, j, direction):
+    if direction == '^':
+        return i == 0
+    if direction == 'v':
+        return i == len(matrix) - 1
+    if direction == '<':
+        return j == 0
+    if direction == '>':
+        return j == len(matrix[0]) - 1
 
 
-def extract_visited(state_history):
-    return {(i, j) for i, j, _ in state_history}
+def next_position(i, j, current_direction):
+    di, dj = DIRECTIONS[current_direction]
+    new_i, new_j = i + di, j + dj
+    return new_i, new_j
 
-def walk(matrix, start_i, start_j, start_direction):
-    cache = set()
+
+def walk(matrix, i, j, current_direction):
+    state_history = set()
     visited = []
-    current_direction = start_direction
-    i, j = start_i, start_j
-
+    loop = False
     while True:
         state = (i, j, current_direction)
-        if state in cache:
+        if state in state_history:
+            loop = True
             break
 
-        cache.add(state)
+        state_history.add(state)
         visited.append((i, j))
 
-        if is_edge(matrix, i, j):
+        if is_looking_at_edge(matrix, i, j, current_direction):
             break
 
-        di, dj = directions[current_direction]
-        new_i, new_j = i + di, j + dj
+        new_i, new_j = next_position(i, j, current_direction)
 
-        if matrix[new_i][new_j] == '#':
-            current_direction = new_direction[current_direction]
-            di, dj = directions[current_direction]
-            new_i, new_j = i + di, j + dj
+        while matrix[new_i][new_j] == '#':
+            current_direction = NEXT_DIRECTION[current_direction]
+            new_i, new_j = next_position(i, j, current_direction)
 
         i, j = new_i, new_j
 
-    return visited
+    return visited, loop
 
 
 def part_1(path):
@@ -77,26 +84,14 @@ def part_2(matrix, visited):
     i, j = find_start(matrix)
     res = 0
 
-    # remove repeated elements
-    visited = list(dict.fromkeys(visited))
-
-    start_pos = (i, j)
-    for count, (visited_i, visited_j) in enumerate(visited):
-
-        if (visited_i, visited_j) == start_pos:
-            continue
-        if matrix[visited_i][visited_j] != '.':
-            continue
-
-        original_value = matrix[visited_i][visited_j]
+    for (visited_i, visited_j) in visited[1:]:
         matrix[visited_i][visited_j] = '#'
 
-        new_visited = walk(matrix, i, j, matrix[i][j])
-        last_i, last_j = new_visited[-1]
-        if not is_edge(matrix, last_i, last_j):
+        _, loop = walk(matrix, i, j, matrix[i][j])
+        if loop:
             res += 1
 
-        matrix[visited_i][visited_j] = original_value
+        matrix[visited_i][visited_j] = '.'
 
     return res
 
@@ -107,9 +102,13 @@ def main():
     print_matrix(matrix)
 
     i, j = find_start(matrix)
-    visited = walk(matrix, i, j, matrix[i][j])
+    visited, _ = walk(matrix, i, j, matrix[i][j])
+    visited = remove_duplicates_preserve_order(visited)
 
-    part1 = part_1(set(visited))
+    new_matrix = build_path(matrix, visited)
+    print_matrix(new_matrix)
+
+    part1 = part_1(visited)
     part2 = part_2(matrix, visited)
 
     print("Part 1:", part1)
