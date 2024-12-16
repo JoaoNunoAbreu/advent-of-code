@@ -18,9 +18,24 @@ def get_distance(a, b):
     return a[0] - b[0], a[1] - b[1]
 
 
-def get_antinodes_coords(a, b):
+def calculate_antinodes(a, b):
     distance_i, distance_j = get_distance(a, b)
     return (a[0] + distance_i, a[1] + distance_j), (b[0] - distance_i, b[1] - distance_j)
+
+def calculate_antinodes_part2(matrix, a, b):
+    distance_i, distance_j = get_distance(a, b)
+    antinode_1, antinode_2 = (a[0] + distance_i, a[1] + distance_j), (b[0] - distance_i, b[1] - distance_j)
+
+    res = {a, b}
+    while is_in_matrix(matrix, antinode_1):
+        res.add(antinode_1)
+        antinode_1 = (antinode_1[0] + distance_i, antinode_1[1] + distance_j)
+
+    while is_in_matrix(matrix, antinode_2):
+        res.add(antinode_2)
+        antinode_2 = (antinode_2[0] - distance_i, antinode_2[1] - distance_j)
+
+    return res
 
 
 def get_possibilities(coords):
@@ -32,12 +47,13 @@ def is_in_matrix(matrix, coords):
 
 
 def draw_antinodes(matrix, res):
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
+    matrix2 = [list(line) for line in matrix]
+    for i in range(len(matrix2)):
+        for j in range(len(matrix2[i])):
             if (i, j) in res:
-                matrix[i][j] = '#'
+                matrix2[i][j] = '#'
 
-    print_matrix(matrix)
+    print_matrix(matrix2)
 
 
 def part_1(matrix):
@@ -46,18 +62,28 @@ def part_1(matrix):
     for coords in locations.values():
         possibilities = get_possibilities(coords)
         for a, b in possibilities:
-            antinodes = get_antinodes_coords(a, b)
+            antinodes = calculate_antinodes(a, b)
             for antinode in antinodes:
                 if is_in_matrix(matrix, antinode):
                     res.add(antinode)
 
     draw_antinodes(matrix, res)
-    print(res)
     return len(res)
 
 
 def part_2(matrix):
-    pass
+    locations = get_locations(matrix)
+    res = set()
+    for coords in locations.values():
+        possibilities = get_possibilities(coords)
+        for a, b in possibilities:
+            antinodes = calculate_antinodes_part2(matrix, a, b)
+            for antinode in antinodes:
+                if is_in_matrix(matrix, antinode):
+                    res.add(antinode)
+
+    draw_antinodes(matrix, res)
+    return len(res)
 
 
 def main():
