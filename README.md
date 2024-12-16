@@ -14,4 +14,4 @@ My solutions to https://adventofcode.com
 | 2021 | X | X | X | X | X | X | X | X | X | X  | X  | X  | X  | X  | X  | X  | X  | X  |    |    |    |    |    |    |    |
 | 2022 | X | X | X | X | X | X | X | X | X | X  | X  | X  |    |    |    |    |    |    |    |    |    |    |    |    |    |
 | 2023 | X | X |   |   |   |   |   |   |   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
-| 2024 | X | X | X |   |   |   |   |   |   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+| 2024 | X | X | X | X | X | X | X | X |   |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
