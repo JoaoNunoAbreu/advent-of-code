@@ -43,17 +43,6 @@ def file_compacting(representation):
 
     return res
 
-
-def checksum(num):
-    return sum(int(digit) * i for i, digit in enumerate(num) if digit != '.')
-
-
-def part_1(num):
-    representation = calculate_representation(num)
-    compacted = file_compacting(representation)
-    return checksum(compacted)
-
-
 def swap_files(representation, start_index, last_index):
     start = representation[start_index]
     last = representation[last_index]
@@ -83,11 +72,18 @@ def normalize(representation):
 
     return normalized
 
+def checksum(num):
+    return sum(int(digit) * i for i, digit in enumerate(num) if digit != '.')
+
+
+def part_1(num):
+    representation = calculate_representation(num)
+    compacted = file_compacting(representation)
+    return checksum(compacted)
+
 
 def part_2(num):
     representation = calculate_representation_arrays(num)
-
-    original_representation = [i for i in representation]
 
     last_index = len(representation) - 1
     while last_index > 0:
@@ -99,16 +95,11 @@ def part_2(num):
         while start_index < last_index and representation[start_index][0] != "." or len(representation[start_index]) < len(representation[last_index]):
             start_index += 1
 
-        if start_index == last_index:
-            last_index -= 1
-        else:
+        if start_index != last_index:
             representation = swap_files(representation, start_index, last_index)
             representation = normalize(representation)
-
-            if original_representation == representation:
-                break
-
-            original_representation = [i for i in representation]
+        else:
+            last_index -= 1
 
     flat_representation = [item for sublist in representation for item in sublist]
     return checksum(flat_representation)
