@@ -19,6 +19,9 @@ def read_file_lines():
 def build_matrix(data):
     return [list(line) for line in data]
 
+def build_matrix_ints(data):
+    return [list(map(int, line)) for line in data]
+
 
 def print_matrix(matrix):
     for line in matrix:
